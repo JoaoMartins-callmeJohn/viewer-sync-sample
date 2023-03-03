@@ -59,7 +59,7 @@ class CalibrateBasisTool extends Autodesk.Viewing.ToolInterface {
 
     this.snapper.indicator.clearOverlays();
     if (this.snapper.isSnapped()) {
-      // this.viewer.clearSelection();
+      this.viewer.clearSelection();
       const result = this.snapper.getSnapResult();
       const { SnapType } = Autodesk.Viewing.MeasureCommon;
       this.snapper.indicator.render(); // Show indicator when snapped to a vertex
