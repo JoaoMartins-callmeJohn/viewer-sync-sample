@@ -27,6 +27,13 @@ With a combination of all these conversions (rotation, scale and translation) we
 ## The math behind the sync
 Before jumping into the math for our calculations, lets begin with some contextuakization.
 
-Both scenes represent each a three dimensional space, with its own coordinate system.
+Both scenes represent each a [vector space](https://en.wikipedia.org/wiki/Vector_space), with its own coordinate system.
 
 ![coordinate systems]()
+
+Each space will have its own [basis](https://en.wikipedia.org/wiki/Basis_(linear_algebra)), that we can use to find the proper transformations. So first of all, we need to find those.
+
+### Finding the basis
+Each Viewer scene itself have its own coordinate system with basis defined, but we can't simply use those, as they don't "see" the model the same way.
+
+We need two basis that 
