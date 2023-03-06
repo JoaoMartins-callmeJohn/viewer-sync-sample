@@ -33,7 +33,7 @@ Both scenes represent each a [vector space](https://en.wikipedia.org/wiki/Vector
 
 Each space will have its own [basis](https://en.wikipedia.org/wiki/Basis_(linear_algebra)), that we'll use to find the proper transformations. So first of all, we need to find those.
 
-### Finding the basis
+### - Finding the basis
 Each Viewer scene itself has its own coordinate system with basis defined, but we can't simply use those, as they don't "see" the model the same way.
 
 If we have two basis representing the models in the scene with the same relative orientation, we can defina a transformation between those. This transformation will be useful to convert coordinates between these two spaces.
@@ -91,5 +91,49 @@ Our space base will be formed by these normalized vectors, and it'll help us to 
 
 We also defined an oblique vector (suming the three basis vectors without normalization) that we'll use to take care of the scaling.
 
-These two spaces basis origins will help us figuring out the translation.
+These two spaces basis origins will help us figuring out the translation between coordinates.
 
+### - Handling rotation
+The transformation between the two spaces basis can be found using the snippet below:
+
+```js
+function findRotation(targetViewerBase, originViewerBase) {
+    return (new THREE.Matrix4()).multiplyMatrices(targetViewerBase, originViewerBase.transpose());
+}
+```
+
+In our case, we'll use the base created with the normalized vectors, so it returns a matrix the we'll use to transform any vector orientation from originViewerBase to originViewerBase.
+
+### - Handling scale
+For scaling, we are going to assume that we have the same scale factor for all the axis (x, y, and z). If we apply different scale factor, that would mean that we have a distortion among the scenes (i.e. the proportions were'nt respected in one specific scene).
+The scale can be found using the function below:
+```js
+function findScale(targetViewerVector, originViewerVector) {
+    return (new THREE.Matrix4()).makeScale(targetViewerVector.length() / originViewerVector.length(), targetViewerVector.length() / originViewerVector.length(), targetViewerVector.length() / originViewerVector.length());
+}
+```
+In our case, we'll use the oblique vector ratio (targetViewerVector divided by originViewerVector) to apply the scale.
+
+### - Handling translation
+Regarding translation, we have to consider the two basis origins.
+
+For any point that we want to transform, we need to subtract the origin of its original base and sum the origin of the target base.
+
+## Putting everything together
+For any point conversion between scenes we need to follow the same order below:
+
+ - Subtract the base origin of the origin scene
+ - Apply the rotation transformation to the vector
+ - Apply the scale transformation to the vector
+ - Sum the base origin of the target scene
+
+Just like in the following snippet:
+
+```js
+let targetViewerPoint = originViewerPoint.clone().sub(originBaseOrigin).applyMatrix4(rotationMatrix).applyMatrix4(scaleMatrix).add(targetBaseOrigin);
+```
+With all of that together, we can sync the two scenes like a charm.
+
+![synced viewers]()
+
+Also note that for two specific models, this needs to be done **only in the first loading**. After the first calibration, you can store the required information such as matices and vectors in an external DB to be loaded every time the models are compared.
