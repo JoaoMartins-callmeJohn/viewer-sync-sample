@@ -37,14 +37,38 @@ class CalibrateBasisTool extends Autodesk.Viewing.ToolInterface {
     if (!this.active) {
       console.log('CalibrateBasisTool activated.');
       this.active = true;
+
+      this.prepareDataViz();
     }
+  }
+
+  async prepareDataViz() {
+    this.dataVizExtn = this.viewer.getExtension("Autodesk.DataVisualization");
+    let DataVizCore = Autodesk.DataVisualization.Core;
+    this.viewableData = new DataVizCore.ViewableData();
+    this.viewableData.spriteSize = 32; // Sprites as points of size 24 x 24 pixels
+    let viewableType = DataVizCore.ViewableType.SPRITE;
+
+    let pointsColor = new THREE.Color(0xffffff);
+
+    let firstPointIconUrl = "https://img.icons8.com/ios/50/null/1-circle.png";
+    let secondPointIconUrl = "https://img.icons8.com/ios/50/null/2-circle.png";
+    let thirdPointIconUrl = "https://img.icons8.com/ios/50/null/3-circle.png";
+    let fourthPointIconUrl = "https://img.icons8.com/ios/50/null/4-circle.png";
+
+    this.pointStyles = [
+      new DataVizCore.ViewableStyle(viewableType, pointsColor, firstPointIconUrl),
+      new DataVizCore.ViewableStyle(viewableType, pointsColor, secondPointIconUrl),
+      new DataVizCore.ViewableStyle(viewableType, pointsColor, thirdPointIconUrl),
+      new DataVizCore.ViewableStyle(viewableType, pointsColor, fourthPointIconUrl)
+    ];
   }
 
   deactivate(name) {
     if (this.active) {
       console.log('CalibrateBasisTool deactivated.');
       this.active = false;
-      this._reset();
+      this.reset();
     }
   }
 
@@ -76,15 +100,17 @@ class CalibrateBasisTool extends Autodesk.Viewing.ToolInterface {
       const result = this.snapper.getSnapResult();
       const { SnapType } = Autodesk.Viewing.MeasureCommon;
       this.points.push(result.intersectPoint.clone());
+      let addedPointIndex = this.points.length - 1;
+      this.renderSprite(this.points[addedPointIndex], addedPointIndex + 10000, addedPointIndex)
 
       if (this.points.length == 4) {
         if (this.arePointsCoplanar()) {
           return true;
         }
 
-        this._update();
+        this.update();
         this.deactivate();
-        this._reset();
+        this.reset();
         return true; // Stop the event from going to other tools in the stack
       }
     }
@@ -101,7 +127,6 @@ class CalibrateBasisTool extends Autodesk.Viewing.ToolInterface {
   handleKeyUp(event, keyCode) {
     if (this.active) {
       if (keyCode === 27) {
-        // Finalize the extrude mesh and initialie a new one
         this.points = [];
         return true;
       }
@@ -109,7 +134,7 @@ class CalibrateBasisTool extends Autodesk.Viewing.ToolInterface {
     return false;
   }
 
-  _update() {
+  update() {
     let v12 = this.points[1].clone().sub(this.points[0]);
     let v13 = this.points[2].clone().sub(this.points[0]);
     this.basis1 = this.points[1].clone().sub(this.points[0]);
@@ -124,13 +149,24 @@ class CalibrateBasisTool extends Autodesk.Viewing.ToolInterface {
     let auxbaseMatrix = new THREE.Matrix4();
     this.baseOrigin = this.points[0].clone();
     this.obliqueVector = this.basis1.clone().add(this.basis2.clone()).add(this.basis3.clone());
-    // this.spaceBase = auxbaseMatrix.clone().makeBasis(this.basis1, this.basis2, this.basis3);
     this.spaceBaseNormal = auxbaseMatrix.clone().makeBasis(this.basis1.clone().normalize(), this.basis2.clone().normalize(), this.basis3.clone().normalize());
   }
 
-  _reset() {
+  reset() {
     this.points = [];
+    this.dataVizExtn.removeAllViewables();
   }
+
+  renderSprite(spritePosition, dbId, pointIndex) {
+    let DataVizCore = Autodesk.DataVisualization.Core;
+    const viewable = new DataVizCore.SpriteViewable(spritePosition, this.pointStyles[pointIndex], dbId);
+    this.viewableData.addViewable(viewable);
+
+    this.viewableData.finish().then(() => {
+      this.dataVizExtn.addViewables(this.viewableData);
+    });
+  }
+
 }
 
 class CalibrateBasisExtension extends Autodesk.Viewing.Extension {
@@ -142,7 +178,7 @@ class CalibrateBasisExtension extends Autodesk.Viewing.Extension {
   }
 
   async onModelLoaded(model) {
-
+    this.dataVizExtn = await this.viewer.getExtension("Autodesk.DataVisualization");
   }
 
   async load() {
