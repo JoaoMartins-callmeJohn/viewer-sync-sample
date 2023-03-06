@@ -76,15 +76,15 @@ this.spaceBaseNormal = auxbaseMatrix.clone().makeBasis(this.basis1.clone().norma
 
 First vector of our base will be the vector from point 1 to point 2
 
-![first vector]()
+![first vector](./assets/first_vector.png)
 
 Second vector of our base will be the height of the triangle formed by points 1, 2 and 3 (taking as base the line passing by points 1 and 2)
 
-![second vector]()
+![second vector](./assets/second_vector.png)
 
 Third vector will be perpendicular to the previous bases and its module will be the distance between the plane 123 and point 4.
 
-![third vector]()
+![third vector](./assets/third_vector.png)
 
 And that's it!
 Our space base will be formed by these normalized vectors, and it'll help us to take care of the rotation between the two scenes.
@@ -133,6 +133,7 @@ Just like in the following snippet:
 let targetViewerPoint = originViewerPoint.clone().sub(originBaseOrigin).applyMatrix4(rotationMatrix).applyMatrix4(scaleMatrix).add(targetBaseOrigin);
 ```
 With all of that together, we can sync the two scenes like a charm.
+Every time the camera changes, we apply the full transformation for camera target and camera position. For the camera up vector we only need to apply the rotation transformation.
 
 ![synced viewers]()
 
