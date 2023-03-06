@@ -29,7 +29,7 @@ Before jumping into the math for our calculations, lets begin with some contextu
 
 Both scenes represent each a [vector space](https://en.wikipedia.org/wiki/Vector_space), with its own coordinate system.
 
-![coordinate systems]()
+![coordinate systems](./assets/coordinate_systems.png)
 
 Each space will have its own [basis](https://en.wikipedia.org/wiki/Basis_(linear_algebra)), that we'll use to find the proper transformations. So first of all, we need to find those.
 
