@@ -48,7 +48,7 @@ Let's use an example:
 - 3rd point = front end of the table top, above the 2 drawers
 - 4th point = rear end of the table top, above the 2 drawers
 
-![pick points]()
+![pick points](./assets/pick_points.gif)
 
 From these points, we can define our base with the snippet below:
 
