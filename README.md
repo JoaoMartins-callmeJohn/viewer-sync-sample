@@ -49,3 +49,47 @@ Let's use an example:
 - 4th point = rear end of the table top, above the 4 drawers
 
 ![pick points]()
+
+From these points, we can define our base with the snippet below:
+
+```js
+let v12 = this.points[1].clone().sub(this.points[0]);
+let v13 = this.points[2].clone().sub(this.points[0]);
+this.basis1 = this.points[1].clone().sub(this.points[0]);
+
+let line12 = new THREE.Line3(this.points[0], this.points[1]);
+let plane123 = (new THREE.Plane()).setFromCoplanarPoints(this.points[0], this.points[1], this.points[2]);
+let auxPoint = line12.closestPointToPoint(this.points[2], false);
+this.basis2 = this.points[2].clone().sub(auxPoint);
+
+let auxDistance = plane123.distanceToPoint(this.points[3]);
+let auxVector = v12.cross(v13);
+this.basis3 = auxVector.normalize().multiplyScalar(auxDistance);
+
+let auxbaseMatrix = new THREE.Matrix4();
+this.baseOrigin = this.points[0].clone();
+
+this.obliqueVector = this.basis1.clone().add(this.basis2.clone()).add(this.basis3.clone());
+
+this.spaceBaseNormal = auxbaseMatrix.clone().makeBasis(this.basis1.clone().normalize(), this.basis2.clone().normalize(), this.basis3.clone().normalize());
+```
+
+First vector of our base will be the vector from point 1 to point 2
+
+![first vector]()
+
+Second vector of our base will be the height of the triangle formed by points 1, 2 and 3 (taking as base the line passing by points 1 and 2)
+
+![second vector]()
+
+Third vector will be perpendicular to the previous bases and its module will be the distance between the plane 123 and point 4.
+
+![third vector]()
+
+And that's it!
+Our space base will be formed by these normalized vectors, and it'll help us to take care of the rotation between the two scenes.
+
+We also defined an oblique vector (suming the three basis vectors without normalization) that we'll use to take care of the scaling.
+
+These two spaces basis origins will help us figuring out the translation.
+
