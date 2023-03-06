@@ -31,9 +31,21 @@ Both scenes represent each a [vector space](https://en.wikipedia.org/wiki/Vector
 
 ![coordinate systems]()
 
-Each space will have its own [basis](https://en.wikipedia.org/wiki/Basis_(linear_algebra)), that we can use to find the proper transformations. So first of all, we need to find those.
+Each space will have its own [basis](https://en.wikipedia.org/wiki/Basis_(linear_algebra)), that we'll use to find the proper transformations. So first of all, we need to find those.
 
 ### Finding the basis
-Each Viewer scene itself have its own coordinate system with basis defined, but we can't simply use those, as they don't "see" the model the same way.
+Each Viewer scene itself has its own coordinate system with basis defined, but we can't simply use those, as they don't "see" the model the same way.
 
-We need two basis that 
+If we have two basis representing the models in the scene with the same relative orientation, we can defina a transformation between those. This transformation will be useful to convert coordinates between these two spaces.
+
+To find these basis, we can query the user to pick 4 points (in each scene).
+
+These points need to be compatible between both scenes, and can'b be [coplanar](https://en.wikipedia.org/wiki/Coplanarity)
+Let's use an example:
+
+- 1st point = front end of the table base, below the 4 drawers
+- 2nd point = front end of the table base, below the 2 drawers
+- 3rd point = front end of the table top, above the 4 drawers
+- 4th point = rear end of the table top, above the 4 drawers
+
+![pick points]()
