@@ -60,10 +60,10 @@
     }).then(function (token) {
 
       // Tables urns
-      // let urns = ['dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb20vZGVzay5ydnQ', 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb20vZGVzay5tYXg'];
+      let urns = ['dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb20vZGVzay5ydnQ', 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb20vZGVzay5tYXg'];
 
       // Vidyatech urns
-      let urns = ['dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb20vN3Aubndk', 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb20vN3AtMTAuNU0uZ2xi'];
+      // let urns = ['dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb20vN3Aubndk', 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb20vN3AtMTAuNU0uZ2xi'];
 
       const options = {
         env: 'AutodeskProduction',
@@ -83,7 +83,7 @@
           document.getElementById("viewersContainer").appendChild(viewerDiv);
 
           const config = {
-            extensions: ['CalibrateBasisExtension']
+            extensions: ['CalibrateBasisExtension', 'Autodesk.DataVisualization']
           };
 
           let viewer = new Autodesk.Viewing.Private.GuiViewer3D(viewerDiv, config);
