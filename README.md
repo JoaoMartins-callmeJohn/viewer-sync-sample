@@ -45,8 +45,8 @@ Let's use an example:
 
 - 1st point = front end of the table base, below the 4 drawers
 - 2nd point = front end of the table base, below the 2 drawers
-- 3rd point = front end of the table top, above the 4 drawers
-- 4th point = rear end of the table top, above the 4 drawers
+- 3rd point = front end of the table top, above the 2 drawers
+- 4th point = rear end of the table top, above the 2 drawers
 
 ![pick points]()
 
