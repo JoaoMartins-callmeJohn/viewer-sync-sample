@@ -1,5 +1,4 @@
 # viewer-sync
-Simple repo to compare two designs side by side with proper sync
 
 ## Introduction
 This sample demonstrates a way to syncronize two Viewers rendering the same project, but originated from diferent sources. It can be useful for a side by side comparision between a nwd, rvt, 3ds max design or a mesh, for instance.
@@ -135,6 +134,6 @@ let targetViewerPoint = originViewerPoint.clone().sub(originBaseOrigin).applyMat
 With all of that together, we can sync the two scenes like a charm.
 Every time the camera changes, we apply the full transformation for camera target and camera position. For the camera up vector we only need to apply the rotation transformation.
 
-![synced viewers]()
+![synced viewer](./assets/synced_viewer.gif)
 
 Also note that for two specific models, this needs to be done **only in the first loading**. After the first calibration, you can store the required information such as matices and vectors in an external DB to be loaded every time the models are compared.
