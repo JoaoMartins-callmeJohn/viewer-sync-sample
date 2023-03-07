@@ -68,7 +68,6 @@ class CalibrateBasisTool extends Autodesk.Viewing.ToolInterface {
     if (this.active) {
       console.log('CalibrateBasisTool deactivated.');
       this.active = false;
-      this.reset();
     }
   }
 
@@ -108,9 +107,9 @@ class CalibrateBasisTool extends Autodesk.Viewing.ToolInterface {
           return true;
         }
 
-        this.update();
+        this.updatePoints();
+        this.resetPoints();
         this.deactivate();
-        this.reset();
         return true; // Stop the event from going to other tools in the stack
       }
     }
@@ -134,7 +133,7 @@ class CalibrateBasisTool extends Autodesk.Viewing.ToolInterface {
     return false;
   }
 
-  update() {
+  updatePoints() {
     let v12 = this.points[1].clone().sub(this.points[0]);
     let v13 = this.points[2].clone().sub(this.points[0]);
     this.basis1 = this.points[1].clone().sub(this.points[0]);
@@ -152,8 +151,11 @@ class CalibrateBasisTool extends Autodesk.Viewing.ToolInterface {
     this.spaceBaseNormal = auxbaseMatrix.clone().makeBasis(this.basis1.clone().normalize(), this.basis2.clone().normalize(), this.basis3.clone().normalize());
   }
 
-  reset() {
+  resetPoints() {
     this.points = [];
+  }
+
+  clearSprites() {
     this.dataVizExtn.removeAllViewables();
   }
 
@@ -202,6 +204,7 @@ class CalibrateBasisExtension extends Autodesk.Viewing.Extension {
     this._button.onClick = () => {
       if (controller.isToolActivated(CalibrateBasisToolName)) {
         controller.deactivateTool(CalibrateBasisToolName);
+        this.tool.clearSprites();
         this._button.setState(Autodesk.Viewing.UI.Button.State.INACTIVE);
       } else {
         controller.activateTool(CalibrateBasisToolName);
