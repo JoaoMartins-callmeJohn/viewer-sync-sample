@@ -156,6 +156,7 @@ class CalibrateBasisTool extends Autodesk.Viewing.ToolInterface {
   }
 
   clearSprites() {
+    this.resetPoints();
     this.dataVizExtn.removeAllViewables();
   }
 
