@@ -136,7 +136,8 @@
   }
 
   function findScale(targetViewerVector, originViewerVector) {
-    return (new THREE.Matrix4()).makeScale(targetViewerVector.length() / originViewerVector.length(), targetViewerVector.length() / originViewerVector.length(), targetViewerVector.length() / originViewerVector.length());
+    let scaleFactor = targetViewerVector.length() / originViewerVector.length();
+    return (new THREE.Matrix4()).makeScale(scaleFactor, scaleFactor, scaleFactor);
   }
 
 </script>
