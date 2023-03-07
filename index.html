@@ -97,23 +97,6 @@
     });
   }
 
-  async function addSphere(center, viewer, red) {
-    var geom = new THREE.SphereGeometry(1.5, 8, 8);
-    let sphereColor = red ? 0xff0000 : 0x00ff00;
-    var material = new THREE.MeshBasicMaterial({ color: sphereColor });
-    var sphereMesh = new THREE.Mesh(geom, material);
-    sphereMesh.position.set(center.x, center.y, center.z);
-    if (!viewer.overlays.hasScene('custom-scene')) {
-      viewer.overlays.addScene('custom-scene');
-    }
-    viewer.overlays.addMesh(sphereMesh, 'custom-scene');
-  }
-
-  async function clearScene(viewer) {
-    if (!viewer.overlays.hasScene('custom-scene')) {
-      viewer.overlays.clearScene('custom-scene');
-    }
-  }
 
   function handleChange(e) {
     if (e.target === currentViewer) {
@@ -135,18 +118,6 @@
 
         targetViewer.navigation.setView(newPosition, newTarget);
         targetViewer.navigation.setCameraUpVector(newUpVector);
-      }
-      else {
-        let options = {
-          seedURN: false,
-          objectSet: false,
-          viewport: true,
-          renderOptions: true,
-          cutplanes: true
-        };
-        let currentViewerState = currentViewer.getState(options);
-        let targetViewer = viewers.find(v => v !== currentViewer);
-        // targetViewer.restoreState(currentViewerState);
       }
     }
   }
