@@ -1,12 +1,12 @@
 # viewer-sync-sample
 
 [![License](http://img.shields.io/:license-MIT-blue.svg)](http://opensource.org/licenses/MIT)
-[![Viewer](https://img.shields.io/badge/oAuth2-v1-green.svg)](http://developer.autodesk.com/)
+[![Viewer](https://img.shields.io/badge/Viewer-v7-green.svg)](http://developer.autodesk.com/)
 
 ![Advanced](https://img.shields.io/badge/Level-Advanced-red.svg)
 
 ## Introduction
-This sample demonstrates a way to syncronize two Viewers rendering the same project, but originated from diferent sources. It can be useful for a side by side comparision between a nwd, rvt, 3ds max design or a mesh, for instance.
+This sample demonstrates a way to synchronize two Viewers rendering the same project, but originated from diferent sources. It can be useful for a side by side comparision between a nwd, rvt, 3ds max design or a mesh, for instance.
 
 ## Live version
 
