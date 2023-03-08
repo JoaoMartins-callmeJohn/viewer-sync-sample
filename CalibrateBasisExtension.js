@@ -201,7 +201,7 @@ class CalibrateBasisExtension extends Autodesk.Viewing.Extension {
 
   onToolbarCreated() {
     const controller = this.viewer.toolController;
-    this._button = this.createToolbarButton('coordinatesextension-button', 'https://img.icons8.com/small/30/null/place-marker.png', 'Calibrate coordinates basis points');
+    this._button = this.createToolbarButton('calibratebasis-button', 'https://img.icons8.com/small/30/null/place-marker.png', 'Calibrate basis tool');
     this._button.onClick = () => {
       if (controller.isToolActivated(CalibrateBasisToolName)) {
         controller.deactivateTool(CalibrateBasisToolName);
