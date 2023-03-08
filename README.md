@@ -1,4 +1,4 @@
-# viewer-sync
+# viewer-sync-sample
 
 ## Introduction
 This sample demonstrates a way to syncronize two Viewers rendering the same project, but originated from diferent sources. It can be useful for a side by side comparision between a nwd, rvt, 3ds max design or a mesh, for instance.
