@@ -109,7 +109,6 @@ class CalibrateBasisTool extends Autodesk.Viewing.ToolInterface {
 
         this.updatePoints();
         this.resetPoints();
-        this.deactivate();
         return true; // Stop the event from going to other tools in the stack
       }
     }
