@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.css">
+  <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
   <title>Autodesk Platform Services: Simple Sync</title>
   <style type="text/css">
     body,
@@ -27,7 +28,7 @@
       height: auto;
     }
 
-    .forgeViewer {
+    .apsViewer {
       width: 50%;
       height: calc(100vh - 2em);
       position: relative;
@@ -38,13 +39,16 @@
 
 <body onload="initViewers()">
   <div id="header">
-    <img class="logo" src="https://cdn.autodesk.io/logo/black/stacked.png " alt="Autodesk Forge">
+    <img class="logo" src="https://cdn.autodesk.io/logo/black/stacked.png " alt="Autodesk Platform Services">
     <span class="title">Simple Viewer Sync</span>
   </div>
   <div id="viewersContainer">
   </div>
   <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.js"></script>
   <script src="./CalibrateBasisExtension.js"></script>
+  <script src="./potree/potree.js"></script>
+  <script src="./potree/PotreeExtension.js"></script>
+  <script src="/potree/data/lion_takanawa/cloud.js"></script>
 </body>
 
 <script>
@@ -59,8 +63,8 @@
       return response.json();
     }).then(function (token) {
 
-      // Tables urns
-      let urns = ['dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb20vZGVzay5ydnQ', 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb20vZGVzay5tYXg'];
+      //Urns
+      let urns = ['dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb21wb3RyZWUvc3RvbmVfbGlvbi5nbGI', 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb21wb3RyZWUvRW1wdHkucnZ0'];
 
       const options = {
         env: 'AutodeskProduction',
@@ -71,7 +75,7 @@
         Autodesk.Viewing.Initializer(options, () => {
 
           let viewerDiv = document.createElement("div");
-          viewerDiv.className = "forgeViewer";
+          viewerDiv.className = "apsViewer";
           viewerDiv.id = `viewer${i}`;
           viewerDiv.onmouseover = (e) => {
             if (!!e.target.viewer)
@@ -80,21 +84,53 @@
           document.getElementById("viewersContainer").appendChild(viewerDiv);
 
           const config = {
-            extensions: ['CalibrateBasisExtension', 'Autodesk.DataVisualization']
+            extensions: ['CalibrateBasisExtension', 'Autodesk.DataVisualization', 'PotreeExtension']
           };
 
           let viewer = new Autodesk.Viewing.Private.GuiViewer3D(viewerDiv, config);
           viewer.start();
           viewer.setTheme("light-theme");
+
           Autodesk.Viewing.Document.load(`urn:${urn}`, doc => {
             var viewables = doc.getRoot().getDefaultGeometry();
             viewer.loadDocumentNode(doc, viewables);
-            viewer.addEventListener(Autodesk.Viewing.CAMERA_CHANGE_EVENT, (e) => handleChange(e));
-            viewers.push(viewer);
           });
+
+          if(atob(urn).includes('Empty.rvt')){
+            let potreeUrn = '/potree/data/lion_takanawa/cloud.js';
+            viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, () => {
+              loadPotreeSample(viewer, potreeUrn)
+            });
+          }
+
+          viewer.addEventListener(Autodesk.Viewing.CAMERA_CHANGE_EVENT, (e) => handleChange(e));
+          viewers.push(viewer);
         });
       });
     });
+  }
+
+  async function loadPotreeSample(viewer, potreeUrn){
+    const potreeExtension = viewer.getExtension('PotreeExtension');
+    let position = new THREE.Vector3(0, 0, -25);
+    let scale = new THREE.Vector3(5, 5, 5);
+    const pointcloud = await potreeExtension.loadPointCloud('my-pointcloud', potreeUrn, position, scale);
+    const bbox = pointcloud.boundingBox.clone().expandByVector(scale);
+    viewer.navigation.fitBounds(false, bbox);
+  }
+
+  async function loadPointCloud(viewer, url) {
+    const potreeExtension = viewer.getExtension('PotreeExtension');
+    if (!potreeExtension) {
+      alert('PotreeExtension not available');
+      return;
+    }
+    let name = `Pointcloud from ${url}`;
+    let position = new THREE.Vector3(0, 0, -25);
+    let scale = new THREE.Vector3(5, 5, 5);
+    const pointcloud = await potreeExtension.loadPointCloud(name, url, position, scale);
+    const bbox = pointcloud.boundingBox.clone().expandByVector(scale);
+    viewer.navigation.fitBounds(false, bbox);
   }
 
 
