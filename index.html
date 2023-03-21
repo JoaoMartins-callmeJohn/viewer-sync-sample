@@ -48,7 +48,7 @@
   <script src="./CalibrateBasisExtension.js"></script>
   <script src="./potree/potree.js"></script>
   <script src="./potree/PotreeExtension.js"></script>
-  <script src="/potree/data/lion_takanawa/cloud.js"></script>
+  <script src="./potree/data/lion_takanawa/cloud.js"></script>
 </body>
 
 <script>
@@ -88,7 +88,12 @@
           };
 
           let viewer = new Autodesk.Viewing.Private.GuiViewer3D(viewerDiv, config);
-          viewer.start();
+          // viewer.start();
+          viewer.start(null, null, null, null, {
+            webglInitParams: {
+              useWebGL2: false
+            }
+          });
           viewer.setTheme("light-theme");
 
           Autodesk.Viewing.Document.load(`urn:${urn}`, doc => {
