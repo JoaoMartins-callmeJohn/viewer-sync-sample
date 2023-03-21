@@ -48,7 +48,6 @@
   <script src="./CalibrateBasisExtension.js"></script>
   <script src="./potree/potree.js"></script>
   <script src="./potree/PotreeExtension.js"></script>
-  <script src="./potree/data/lion_takanawa/cloud.js"></script>
 </body>
 
 <script>
@@ -63,8 +62,10 @@
       return response.json();
     }).then(function (token) {
 
-      //Urns
-      let urns = ['dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb21wb3RyZWUvc3RvbmVfbGlvbi5nbGI', 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb21wb3RyZWUvRW1wdHkucnZ0'];
+      //Urns (Empty model)
+      // let urns = ['dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb21wb3RyZWUvc3RvbmVfbGlvbi5nbGI', 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb21wb3RyZWUvRW1wdHkucnZ0'];
+      //Urns Office.rvt
+      let urns = ['dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb21wb3RyZWUvc3RvbmVfbGlvbi5nbGI','dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cmVuZGVyY29tcGFyZWpwb21wb3RyZWUvT2ZmaWNlLnJ2dA']
 
       const options = {
         env: 'AutodeskProduction',
@@ -89,11 +90,7 @@
 
           let viewer = new Autodesk.Viewing.Private.GuiViewer3D(viewerDiv, config);
           // viewer.start();
-          viewer.start(null, null, null, null, {
-            webglInitParams: {
-              useWebGL2: false
-            }
-          });
+          viewer.start();
           viewer.setTheme("light-theme");
 
           Autodesk.Viewing.Document.load(`urn:${urn}`, doc => {
@@ -102,9 +99,9 @@
           });
 
           if(atob(urn).includes('Empty.rvt')){
-            let potreeUrn = '/potree/data/lion_takanawa/cloud.js';
+            let potreeUrl = '/potree/data/lion_takanawa/cloud.js';
             viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, () => {
-              loadPotreeSample(viewer, potreeUrn)
+              loadPotreeSample(viewer, potreeUrl)
             });
           }
 
@@ -115,8 +112,9 @@
     });
   }
 
-  async function loadPotreeSample(viewer, potreeUrn){
+  async function loadPotreeSample(viewer, potreeUrl){
     const potreeExtension = viewer.getExtension('PotreeExtension');
+    potreeExtension.url = potreeUrl;
     let position = new THREE.Vector3(0, 0, -25);
     let scale = new THREE.Vector3(5, 5, 5);
     const pointcloud = await potreeExtension.loadPointCloud('my-pointcloud', potreeUrn, position, scale);
@@ -131,7 +129,7 @@
       return;
     }
     let name = `Pointcloud from ${url}`;
-    let position = new THREE.Vector3(0, 0, -25);
+    let position = new THREE.Vector3(0, 0, 0);
     let scale = new THREE.Vector3(5, 5, 5);
     const pointcloud = await potreeExtension.loadPointCloud(name, url, position, scale);
     const bbox = pointcloud.boundingBox.clone().expandByVector(scale);

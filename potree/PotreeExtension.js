@@ -4,6 +4,19 @@ class PotreeExtension extends Autodesk.Viewing.Extension {
         this._group = null;
         this._pointclouds = new Map();
         this._timer = null;
+        if (options && options.url) {
+            this._initConfig = {
+                url: options.url,
+                position: null,
+                scale: null
+            };
+            if (options.position && Array.isArray(options.position)) {
+                this._initConfig.position = new THREE.Vector3(options.position[0], options.position[1], options.position[2]);
+            }
+            if (options.scale && Array.isArray(options.scale)) {
+                this._initConfig.scale = new THREE.Vector3(options.scale[0], options.scale[1], options.scale[2]);
+            }
+        }
     }
 
     load() {
@@ -20,6 +33,11 @@ class PotreeExtension extends Autodesk.Viewing.Extension {
         this._timer = setInterval(this.updatePointClouds.bind(this), 500);
 
         console.log('PotreeExtension loaded.');
+
+        if (this._initConfig) {
+            this.loadPointCloud('my-pointcloud', this._initConfig.url, this._initConfig.position, this._initConfig.scale);
+        }
+
         return true;
     }
 
