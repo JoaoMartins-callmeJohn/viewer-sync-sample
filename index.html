@@ -99,7 +99,7 @@
 
           if(atob(urn).includes('Office.rvt')){
             let potreeUrl = '/potree/data/lion_takanawa/cloud.js';
-            viewer.addEventListener(Autodesk.Viewing.TEXTURES_LOADED_EVENT, () => {
+            viewer.addEventListener(Autodesk.Viewing.OBJECT_TREE_CREATED_EVENT, () => {
               loadPotreeSample(viewer, potreeUrl)
             });
           }
